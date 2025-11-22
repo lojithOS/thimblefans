@@ -1,0 +1,2 @@
+#!/bin/sh
+exec /home/lojith/Documents/Github/thimblefans/fan_speed_control

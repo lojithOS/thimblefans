@@ -1,0 +1,23 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Run make",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "/usr/bin/make",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "preLaunchTask": "make",
+            "miDebuggerPath": "/usr/bin/gdb",
+            "setupCommands": [
+                {
+                    "description": "Just run make, no debugging",
+                    "text": "-exec-run",
+                    "ignoreFailures": true
+                }
+            ]
+        }
+    ]
+}
