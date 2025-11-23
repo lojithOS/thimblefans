@@ -1,5 +1,5 @@
 # Variables
-LDFLAGS = -lhidapi-hidraw -lpthread
+LDFLAGS = -lhidapi-hidraw
 SRC = $(wildcard src/*.c)
 OUT = fan_speed_control
 

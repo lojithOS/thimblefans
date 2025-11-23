@@ -1,32 +1,18 @@
 #!/bin/sh
 
-SERVICE_NAME="s6-fan_speed_control"
-SERVICE_DIR="/etc/s6/services/$SERVICE_NAME"
-SRC_DIR="$(pwd)/$SERVICE_NAME"
-LOCK_FILE="/var/run/fan_speed_control.lock"
+UDEV_RULE="/etc/udev/rules.d/99-lian-li-fans.rules"
+LOCK_FILE="/tmp/fan_speed_control.lock"
 
-# Stop the service if running
-if [ -d "$SERVICE_DIR" ]; then
-    echo "Stopping $SERVICE_NAME service..."
-    sudo s6-svc -d "$SERVICE_DIR" 2>/dev/null
+# Stop the fan control process if running
+if pgrep -x fan_speed_control > /dev/null; then
+    echo "Stopping fan_speed_control..."
+    sudo pkill -x fan_speed_control
     sleep 1
-fi
-
-# Remove service directory (includes all s6 state files)
-if [ -d "$SERVICE_DIR" ]; then
-    echo "Removing $SERVICE_DIR and all s6 state files..."
-    sudo rm -rf "$SERVICE_DIR"
-fi
-
-# Remove local service directory
-if [ -d "$SRC_DIR" ]; then
-    echo "Removing $SRC_DIR..."
-    rm -rf "$SRC_DIR"
 fi
 
 # Remove lock file
 if [ -f "$LOCK_FILE" ]; then
-    echo "Removing lock file $LOCK_FILE..."
+    echo "Removing lock file..."
     sudo rm -f "$LOCK_FILE"
 fi
 
@@ -36,4 +22,11 @@ if [ -f "/usr/local/bin/fan_speed_control" ]; then
     sudo rm -f /usr/local/bin/fan_speed_control
 fi
 
-echo "$SERVICE_NAME uninstalled."
+# Remove udev rule
+if [ -f "$UDEV_RULE" ]; then
+    echo "Removing udev rule..."
+    sudo rm -f "$UDEV_RULE"
+    sudo udevadm control --reload
+fi
+
+echo "fan_speed_control uninstalled."

@@ -7,7 +7,7 @@
 
 #define VENDOR_ID 0x0cf2
 #define PRODUCT_ID 0xa102
-#define LOCK_FILE "/var/run/fan_speed_control.lock"
+#define LOCK_FILE "/tmp/fan_speed_control.lock"
 
 void send_command(hid_device *device, unsigned char *data, size_t length) {
     hid_write(device, data, length);
@@ -16,6 +16,7 @@ void send_command(hid_device *device, unsigned char *data, size_t length) {
 void set_speed(hid_device *device, int speed) {
     float rpm = 200.0 + 1900.0 * (speed / 100.0);
     unsigned char speed_byte = (unsigned char)(rpm / 21.0);
+    fprintf(stderr, "Setting speed to %d%% (RPM: %.0f, Byte: %d)\n", speed, rpm, speed_byte);
     for (int i = 0; i < 3; i++) {
         unsigned char command[4] = {224, 32 + i, 0, speed_byte};
         send_command(device, command, sizeof(command));
@@ -80,11 +81,16 @@ int main() {
             speed = 40;;
         } else if (temp < 60.0f) {
             speed = 45;
-        } else {
+        } else if (temp < 70.0f) {
             speed = 55;
+        } else if (temp < 80.0f) {
+            speed = 60;
+        } else {
+            speed = 70;
         }
+
         set_speed(handle, speed);
-        sleep(6);
+        sleep(2);
     }
 
     hid_close(handle);
