@@ -77,7 +77,7 @@ int main() {
 
         int speed;
         if (temp < 50.0f) {
-            speed = 25;;
+            speed = 40;;
         } else if (temp < 60.0f) {
             speed = 45;
         } else {
